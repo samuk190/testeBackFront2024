@@ -1,16 +1,16 @@
 package com.teste.entrevista.staff.service;
 
-import com.teste.entrevista.staff.event.EventPublisher;
-import com.teste.entrevista.staff.model.Carro;
-import com.teste.entrevista.staff.repository.CarroRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+
+import com.teste.entrevista.staff.event.EventPublisher;
+import com.teste.entrevista.staff.model.Carro;
+import com.teste.entrevista.staff.repository.CarroRepository;
 
 public class CarroServiceTest {
 

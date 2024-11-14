@@ -32,7 +32,7 @@ services:
       - app-network
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    container_name: rabbitmqq
     ports:
       - "5672:5672"  # Porta padrão para conexões
       - "15672:15672"  # Porta para o painel de gerenciamento
@@ -41,6 +41,7 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
   rabbitmq_data:
 networks:

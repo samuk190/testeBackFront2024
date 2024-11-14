@@ -1,18 +1,17 @@
-import com.teste.entrevista.staff.controller.CarroController;
-import com.teste.entrevista.staff.model.Carro;
-import com.teste.entrevista.staff.service.CarroService;
-import org.junit.jupiter.api.Test;
+package com.teste.entrevista.staff.controller;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import com.teste.entrevista.staff.model.Carro;
+import com.teste.entrevista.staff.service.CarroService;
 public class CarroControllerTest {
 
     @Mock

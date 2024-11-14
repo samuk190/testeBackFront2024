@@ -1,17 +1,17 @@
-import com.teste.entrevista.staff.controller.ClienteController;
-import com.teste.entrevista.staff.model.Cliente;
-import com.teste.entrevista.staff.service.ClienteService;
-import org.junit.jupiter.api.Test;
+package com.teste.entrevista.staff.controller;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+
+import com.teste.entrevista.staff.model.Cliente;
+import com.teste.entrevista.staff.service.ClienteService;
 
 public class ClienteControllerTest {
 
