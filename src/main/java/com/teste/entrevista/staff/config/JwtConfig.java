@@ -12,7 +12,9 @@ import io.jsonwebtoken.security.Keys;
 public class JwtConfig {
     @Bean
     public Key secretKey() {
+        String fixedSecret = "YourSuperSecretKeyThatIsLongEnoughToMeetHS512Requirements1234567890";
 
-        return Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        return Keys.hmacShaKeyFor(fixedSecret.getBytes());
+        //return Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 }

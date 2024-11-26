@@ -20,7 +20,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private Key secretKey;
+    private final Key secretKey;
+
+    public JwtRequestFilter(Key secretKey) {
+        this.secretKey = secretKey;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -31,13 +35,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        // Verifica se o token está presente e se inicia com "Bearer "
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
-            username = extractUsername(jwt);
+            try {
+                username = extractUsername(jwt);
+            } catch (Exception e) {
+                System.err.println("Erro ao extrair o username do token: " + e.getMessage());
+            }
         }
 
-        // Configura a autenticação no contexto de segurança se o username foi extraído com sucesso
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     username, null, new ArrayList<>());
@@ -45,11 +51,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        // Prossegue com a cadeia de filtros
         chain.doFilter(request, response);
     }
 
-    // Extrai o username (subject) do token JWT
     private String extractUsername(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(secretKey)

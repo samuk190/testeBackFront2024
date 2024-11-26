@@ -7,13 +7,48 @@ services:
       dockerfile: Dockerfile
       args:
       - JAVA_HOME=/opt/java/openjdk
-    ports:
-      - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: dev  # Ajuste conforme o perfil desejado
       JAVA_HOME: /opt/java/openjdk
+      SPRING_APPLICATION_NAME: entrevistastaff
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/carro_atendimento
+      SPRING_DATASOURCE_USERNAME: app_user
+      SPRING_DATASOURCE_PASSWORD: app_password
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
     ports:
       - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  laravel-app:
+    build:
+      context: laravel-api/realtime-api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./laravel-api/realtime-api:/var/www/html
+    environment:
+      APP_KEY: base64:your-app-key-here
+      APP_ENV: local
+      APP_DEBUG: 'true'
+      APP_URL: http://localhost:8000
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: carro_atendimento
+      DB_USERNAME: app_user
+      DB_PASSWORD: app_password
+    command: sh -c "./wait-for-it.sh --host=db --port=3306 --strict --timeout=30 -- php artisan migrate && php artisan serve --host=0.0.0.0 --port=8000"
     depends_on:
       - db
     networks:
@@ -23,27 +58,44 @@ services:
     image: mysql:8.0
     environment:
       MYSQL_DATABASE: carro_atendimento
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+      MYSQL_ROOT_PASSWORD: app_password
     ports:
       - "3306:3306"
     networks:
       - app-network
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmqq
     ports:
-      - "5672:5672"  # Porta padrão para conexões
-      - "15672:15672"  # Porta para o painel de gerenciamento
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app-network
+
+  vite-app:
+    build:
+      context: front-end-app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front-end-app:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0 --port 3000
+    networks:
+      - app-network
 
 volumes:
   rabbitmq_data:
+
 networks:
   app-network:
     driver: bridge

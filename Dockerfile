@@ -18,8 +18,12 @@ RUN chmod +x ./gradlew
 # Copia o restante do código da aplicação para o contêiner
 COPY . .
 
+# Realiza o refresh de dependências
+
+RUN ./gradlew clean build --refresh-dependencies
+
 # Compila o projeto sem tentar resolver dependências de sistema
-RUN ./gradlew build -x test --no-daemon --info
+RUN ./gradlew build -x test --no-daemon --debug
 
 # Expõe a porta padrão do Spring Boot
 EXPOSE 8080
